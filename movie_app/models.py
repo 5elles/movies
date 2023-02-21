@@ -32,7 +32,7 @@ class Movie(models.Model):
     ]
 
     name = models.CharField(max_length=40, verbose_name='название')
-    description = models.TextField(max_length=4096, blank=True, verbose_name='Описание')
+    description = models.TextField(max_length=4096, blank=True, verbose_name='описание')
     rating = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(100)],
         verbose_name='рейтинг'
@@ -41,6 +41,7 @@ class Movie(models.Model):
     budget = models.IntegerField(default=1000000, verbose_name='бюджет')
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default=USD, verbose_name='валюта')
     slug = models.SlugField(null=False, db_index=True, unique=True)
+    director = models.ForeignKey(Director, on_delete=models.CASCADE, null=True, verbose_name='режиссёр')
 
     def save(self, *args, **kwargs):  # заполнение поля slug
         self.slug = slugify(self.name)
