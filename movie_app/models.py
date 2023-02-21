@@ -18,6 +18,8 @@ class Director(models.Model):
                f'{self.patronymic} ' \
                f'| email: {self.director_email} | '
 
+    def get_url(self):
+        return reverse('director-detail', args=[self.id])
 
 
 class Movie(models.Model):
