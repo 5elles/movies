@@ -1,9 +1,10 @@
 from django.contrib import admin
-from .models import Movie, Director
+from .models import Movie, Director, Actor
 from django.db.models import QuerySet
 
 
 # Register your models here.
+admin.site.register(Actor)  # второй способ регистрации - декоратор @admin.register(НазвМодели)
 
 class RatingFilter(admin.SimpleListFilter):
     title = "Фильтр по рейтингу"
@@ -27,13 +28,13 @@ class RatingFilter(admin.SimpleListFilter):
             return queryset.filter(rating__gte=80)
 
 
-
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    fields = (('name', 'year', 'rating'), ('budget', 'currency'), 'description', 'director', 'slug')
+    fields = (('name', 'year', 'rating'), ('budget', 'currency'), 'description', 'director', 'actors', 'slug')
     prepopulated_fields = {'slug': ('name',)}
     list_display = ["name", "rating", "year", "budget", "director", "rating_status"]
     list_editable = ["rating", "year", "budget", "director"]
+    filter_horizontal = ["actors"]
     ordering = ["name"]
     list_per_page = 10
     actions = ["set_dollars", "set_euros", "set_rubles"]
@@ -67,3 +68,4 @@ class MovieAdmin(admin.ModelAdmin):
 @admin.register(Director)
 class DirectorAdmin(admin.ModelAdmin):
     fields = [('first_name', 'patronymic'), 'last_name', 'director_email']
+
