@@ -1,10 +1,16 @@
 from django.contrib import admin
-from .models import Movie, Director, Actor
+from .models import Movie, Director, Actor, DressingRoom
 from django.db.models import QuerySet
 
 
 # Register your models here.
 admin.site.register(Actor)  # второй способ регистрации - декоратор @admin.register(НазвМодели)
+# admin.site.register(DressingRoom)
+
+@admin.register(DressingRoom)
+class DressingRoomAdmin(admin.ModelAdmin):
+    list_display = ['floor', 'number', 'actor']
+
 
 class RatingFilter(admin.SimpleListFilter):
     title = "Фильтр по рейтингу"

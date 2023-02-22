@@ -5,6 +5,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 # Create your models here.
+class DressingRoom(models.Model):
+    floor = models.IntegerField(verbose_name='этаж')
+    number = models.IntegerField(verbose_name='кабинет')
+
+    def __str__(self):
+        return f'{self.floor} | {self.number}'
+
+
 class Actor(models.Model):
     MALE = 'M'
     FEMALE = 'F'
@@ -13,9 +21,11 @@ class Actor(models.Model):
         (MALE, 'Мужчина'),
         (FEMALE, 'Женщина')
     ]
-    first_name = models.CharField(max_length=100, blank=True, verbose_name= 'имя')
-    last_name = models.CharField(max_length=100, blank=False, verbose_name= 'фамилия')
-    gender = models.CharField(max_length=1, default=MALE, choices=GENDERS)
+    first_name = models.CharField(max_length=100, blank=True, verbose_name='имя')
+    last_name = models.CharField(max_length=100, blank=False, verbose_name='фамилия')
+    gender = models.CharField(max_length=1, default=MALE, choices=GENDERS, verbose_name='пол')
+    dressing = models.OneToOneField(DressingRoom, on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='гримёрка')
 
     def __str__(self):
         if self.gender == self.MALE:
@@ -28,9 +38,9 @@ class Actor(models.Model):
 
 
 class Director(models.Model):
-    first_name = models.CharField(max_length=100, blank=True, verbose_name= 'имя')
-    patronymic = models.CharField(max_length=100, blank=True, verbose_name= 'отчество')
-    last_name = models.CharField(max_length=100, blank=False, verbose_name= 'фамилия')
+    first_name = models.CharField(max_length=100, blank=True, verbose_name='имя')
+    patronymic = models.CharField(max_length=100, blank=True, verbose_name='отчество')
+    last_name = models.CharField(max_length=100, blank=False, verbose_name='фамилия')
     director_email = models.EmailField(default='-', verbose_name='email')
 
     def __str__(self):
@@ -61,7 +71,9 @@ class Movie(models.Model):
     budget = models.IntegerField(default=1000000, verbose_name='бюджет')
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default=USD, verbose_name='валюта')
     slug = models.SlugField(null=False, db_index=True, unique=True)
-    director = models.ForeignKey(Director, on_delete=models.CASCADE, null=True, verbose_name='режиссёр')
+    director = models.ForeignKey(
+        Director, on_delete=models.CASCADE, null=True, related_name='movies', verbose_name='режиссёр'
+    )
     actors = models.ManyToManyField(Actor, verbose_name='актёры')
 
     def save(self, *args, **kwargs):  # заполнение поля slug
