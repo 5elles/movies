@@ -5,7 +5,7 @@
  {% block content %}
      <h2> Список всех актёров </h2>
      <ul>
-     {% for actor in actors %}
+     {% for actor in object_list %}
          <li><a href="{{ actor.get_url }}">{{ actor }}</a></li>
 
      {% endfor %}
